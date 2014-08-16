@@ -1,13 +1,14 @@
 # Reproducible Research: Peer Assessment 1
 
 Although it would not be part of a final report, I have included the
-assignment requirements here to make assessment easier.
+assignment requirements here (in italics) to make reviewing for
+assessment easier.
 
 ## Loading and preprocessing the data
 
-1. Load the data (i.e. `read.csv()`)
-2. Process/transform the data (if necessary) into a format suitable
-   for your analysis
+1. *Load the data (i.e. `read.csv()`)*
+2. *Process/transform the data (if necessary) into a format suitable
+   for your analysis*
 
    ```{r, echo="true"}
    data <- read.csv(unz("activity.zip", "activity.csv"),
@@ -20,7 +21,7 @@ assignment requirements here to make assessment easier.
 For this part of the assignment, you can ignore the missing values in
 the dataset.
 
-1. Make a histogram of the total number of steps taken each day
+1. *Make a histogram of the total number of steps taken each day*
 
    The following histogram shows the distribution of the total number
 of steps per day over the number of days that total was
@@ -37,8 +38,8 @@ zero.
    medianSteps <- median(dailySteps)
    ```
 
-2. Calculate and report the **mean** and **median** total number of
-   steps taken per day
+2. *Calculate and report the* **mean** *and* **median** *total number of
+   steps taken per day*
 
    Answer: The daily step mean is **`r sprintf("%.1f", meanSteps)`**
 and the median is **`r sprintf("%.1f", medianSteps)`**. Here they are
@@ -53,17 +54,17 @@ across the whole data set, including the mean and the median:
 
 ## What is the average daily activity pattern?
 
-1. Make a time series plot (i.e. `type = "l"`) of the 5-minute
+1. *Make a time series plot (i.e. `type = "l"`) of the 5-minute
    interval (x-axis) and the average number of steps taken, averaged
-   across all days (y-axis)
+   across all days (y-axis)*
 
    ```{r, echo="true"}
    meanStepsByInterval <- aggregate(steps ~ interval, data=data, "mean")
    plot(meanStepsByInterval, type="l")
    ```
 
-2. Which 5-minute interval, on average across all the days in the
-   dataset, contains the maximum number of steps?
+2. *Which 5-minute interval, on average across all the days in the
+   dataset, contains the maximum number of steps?*
 
    ```{r, echo="true"}
    maxRow <- which.max(meanStepsByInterval$steps)
@@ -75,12 +76,12 @@ steps, averaged across all the days in the dataset.
 
 ## Imputing missing values
 
-Note that there are a number of days/intervals where there are missing
+*Note that there are a number of days/intervals where there are missing
 values (coded as `NA`). The presence of missing days may introduce
-bias into some calculations or summaries of the data.
+bias into some calculations or summaries of the data.*
 
-1. Calculate and report the total number of missing values in the
-dataset (i.e. the total number of rows with `NA`s)
+1. *Calculate and report the total number of missing values in the
+   dataset (i.e. the total number of rows with `NA`s)*
 
    ```{r, echo="true"}
    missingRowCount <- sum(!complete.cases(data))
@@ -89,10 +90,10 @@ dataset (i.e. the total number of rows with `NA`s)
    Answer: There are **`r missingRowCount`** rows with missing values
 in the dataset.
 
-2. Devise a strategy for filling in all of the missing values in the
+2. *Devise a strategy for filling in all of the missing values in the
    dataset. The strategy does not need to be sophisticated. For
    example, you could use the mean/median for that day, or the mean
-   for that 5-minute interval, etc.
+   for that 5-minute interval, etc.*
 
    Answer: My strategy is to use the mean for the day. This seems like
 a bad idea, as the lecturer stated, but I'm doing it as it's a
@@ -119,8 +120,8 @@ row.
    }
    ```
 
-3. Create a new dataset that is equal to the original dataset but with
-   the missing data filled in.
+3. *Create a new dataset that is equal to the original dataset but with
+   the missing data filled in.*
 
    I use the `stepsOrMeanForInterval` function to create a vector of
 steps for each row in the dataset. The new data set `newdata` uses
@@ -131,11 +132,11 @@ this vector for its `steps` column.
    newdata <- within(data, { steps <- imputedSteps })
    ```
 
-4. Make a histogram of the total number of steps taken each day and
+4. *Make a histogram of the total number of steps taken each day and
    calculate and report the mean and median total number of steps
    taken per day. Do these values differ from the estimates from the
    first part of the assignment? What is the impact of imputing
-   missing data on the estimates of the total daily number of steps?
+   missing data on the estimates of the total daily number of steps?*
 
    ```{r, echo="true"}
    newDailySteps <- rowsum(newdata$steps, newdata$date, na.rm=TRUE)
@@ -158,11 +159,12 @@ of the distribution.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-For this part the `weekdays()` function may be of some help here. Use the dataset with the filled-in missing values for this part.
+*For this part the `weekdays()` function may be of some help here. Use
+the dataset with the filled-in missing values for this part.*
 
-1. Create a new factor variable in the dataset with two levels -
+1. *Create a new factor variable in the dataset with two levels -
    "weekday" and "weekend" indicating whether a given date is a
-   weekday or weekend day.
+   weekday or weekend day.*
 
    ```{r, echo="true"}
    dayLevels <- c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
@@ -172,11 +174,11 @@ For this part the `weekdays()` function may be of some help here. Use the datase
                           labels=c("weekend", "weekday"))
    ```
 
-2. Make a panel plot containing a time series plot (i.e. `type = "l"`)
+2. *Make a panel plot containing a time series plot (i.e. `type = "l"`)
    of the 5-minute interval (x-axis) and the average number of steps
    taken, averaged across all weekday days or weekend days
    (y-axis). The plot should look something like the following, which
-   was creating using simulated data:
+   was creating using simulated data:*
 
    ```{r, echo="true"}
    stepsByDayType <- aggregate(steps ~ interval * dayType, data=data, mean)
