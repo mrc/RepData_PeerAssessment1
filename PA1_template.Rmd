@@ -31,7 +31,7 @@ reached.
 as part of the sum, and days without any measurements had a sum of
 zero.
 
-   ```{r, echo="true"}
+   ```{r dailyStepsHist, echo="true"}
    dailySteps <- rowsum(data$steps, data$date, na.rm=TRUE)
    hist(dailySteps, breaks=10, main="Histogram of daily steps")
    meanSteps <- mean(dailySteps)
@@ -46,7 +46,7 @@ and the median is **`r sprintf("%.1f", medianSteps)`**. Here they are
 shown along with the distribution of the total number of steps per day
 across the whole data set, including the mean and the median:
 
-   ```{r, echo="true"}
+   ```{r dailyStepsBox, echo="true"}
    boxplot(dailySteps, main="Daily steps")
    abline(h=meanSteps)
    legend("topright", summary(dailySteps))
@@ -58,7 +58,7 @@ across the whole data set, including the mean and the median:
    interval (x-axis) and the average number of steps taken, averaged
    across all days (y-axis)*
 
-   ```{r, echo="true"}
+   ```{r meanStepsByInterval, echo="true"}
    meanStepsByInterval <- aggregate(steps ~ interval, data=data, "mean")
    plot(meanStepsByInterval, type="l")
    ```
@@ -104,7 +104,7 @@ which, when given a row, will return either the steps for that row, or
 the mean (from the lookup table) if the steps are missing from the
 row.
 
-   ```{r, echo="true"}
+   ```{r meanForInterval, echo="true"}
    meanForInterval <- tapply(data$steps, data$interval, "mean", na.rm=TRUE)
    hist(meanForInterval)
 
@@ -138,7 +138,7 @@ this vector for its `steps` column.
    first part of the assignment? What is the impact of imputing
    missing data on the estimates of the total daily number of steps?*
 
-   ```{r, echo="true"}
+   ```{r imputedHistAndBox, echo="true"}
    newDailySteps <- rowsum(newdata$steps, newdata$date, na.rm=TRUE)
    hist(newDailySteps, breaks=10, main="Histogram of daily steps (imputed)")
    newMeanSteps <- mean(newDailySteps)
@@ -180,7 +180,7 @@ the dataset with the filled-in missing values for this part.*
    (y-axis). The plot should look something like the following, which
    was creating using simulated data:*
 
-   ```{r, echo="true"}
+   ```{r stepsByDayType, echo="true"}
    stepsByDayType <- aggregate(steps ~ interval * dayType, data=data, mean)
    xyplot(steps ~ interval | dayType, data=stepsByDayType,
           type="l", layout=c(1,2))
