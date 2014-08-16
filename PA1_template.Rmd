@@ -1,5 +1,7 @@
 # Reproducible Research: Peer Assessment 1
 
+Although it would not be part of a final report, I have included the
+assignment requirements here to make assessment easier.
 
 ## Loading and preprocessing the data
 
@@ -24,24 +26,23 @@ the dataset.
 of steps per day over the number of days that total was
 reached.
 
-   Originally I used `na.rm=TRUE` here, so missing measurements were
-not included as part of the sum, and days without any measurements had
-a sum of zero. However this made the "Imputing Values" section of the
-assignment less interesting, so although I believe it was a superior
-method I have changed it so missing values taint the daily steps
-aggregation.
+   I use `na.rm=TRUE` here, so missing measurements are not included
+as part of the sum, and days without any measurements had a sum of
+zero.
 
    ```{r, echo="true"}
-   dailySteps <- rowsum(data$steps, data$date, na.rm=FALSE)
+   dailySteps <- rowsum(data$steps, data$date, na.rm=TRUE)
    hist(dailySteps, breaks=10, main="Histogram of daily steps")
    meanSteps <- mean(dailySteps)
+   medianSteps <- median(dailySteps)
    ```
 
 2. Calculate and report the **mean** and **median** total number of
    steps taken per day
 
-   Answer: The daily step average is `r meanSteps`. Here it is shown
-along with the distribution of the total number of steps per day
+   Answer: The daily step mean is **`r sprintf("%.1f", meanSteps)`**
+and the median is **`r sprintf("%.1f", medianSteps)`**. Here they are
+shown along with the distribution of the total number of steps per day
 across the whole data set, including the mean and the median:
 
    ```{r, echo="true"}
@@ -69,8 +70,8 @@ across the whole data set, including the mean and the median:
    maxInterval <- meanStepsByInterval[maxRow,]$interval
    ```
 
-   Answer: Interval `r maxInterval` has the highest number of steps,
-averaged across all the days in the dataset.
+   Answer: Interval **`r maxInterval`** has the highest number of
+steps, averaged across all the days in the dataset.
 
 ## Imputing missing values
 
@@ -85,17 +86,22 @@ dataset (i.e. the total number of rows with `NA`s)
    missingRowCount <- sum(!complete.cases(data))
    ```
 
-   Answer: There are `r missingRowCount` rows with missing values in
-the dataset.
+   Answer: There are **`r missingRowCount`** rows with missing values
+in the dataset.
 
 2. Devise a strategy for filling in all of the missing values in the
    dataset. The strategy does not need to be sophisticated. For
    example, you could use the mean/median for that day, or the mean
    for that 5-minute interval, etc.
 
-   Answer: Using the mean for the day (this seems like a bad idea, as
-the lecturer stated, but I'm doing it as it's a required part of this
-assignment.)
+   Answer: My strategy is to use the mean for the day. This seems like
+a bad idea, as the lecturer stated, but I'm doing it as it's a
+required part of this assignment.
+
+   I calculate a lookup table for each interval, and create a function
+which, when given a row, will return either the steps for that row, or
+the mean (from the lookup table) if the steps are missing from the
+row.
 
    ```{r, echo="true"}
    meanForInterval <- tapply(data$steps, data$interval, "mean", na.rm=TRUE)
@@ -116,6 +122,10 @@ assignment.)
 3. Create a new dataset that is equal to the original dataset but with
    the missing data filled in.
 
+   I use the `stepsOrMeanForInterval` function to create a vector of
+steps for each row in the dataset. The new data set `newdata` uses
+this vector for its `steps` column.
+
    ```{r, echo="true"}
    imputedSteps <- apply(data, 1, stepsOrMeanForInterval)
    newdata <- within(data, { steps <- imputedSteps })
@@ -128,7 +138,7 @@ assignment.)
    missing data on the estimates of the total daily number of steps?
 
    ```{r, echo="true"}
-   newDailySteps <- rowsum(newdata$steps, newdata$date, na.rm=FALSE)
+   newDailySteps <- rowsum(newdata$steps, newdata$date, na.rm=TRUE)
    hist(newDailySteps, breaks=10, main="Histogram of daily steps (imputed)")
    newMeanSteps <- mean(newDailySteps)
 
@@ -138,9 +148,13 @@ assignment.)
    legend("topright", summary(newDailySteps), title="Imputed")
    ```
 
-   Answer: Do these values differ? Not really, though from the boxplot
-we can see the imputed values result in a "tight" pattern, with less
-variance from the mean.
+   Answer: Do these values differ? The median changes slightly, and
+the mean increases. From the following boxplot, we can see the imputed
+values result in a "tight" pattern, with less variance from the mean.
+
+   In the original data set there are eight days which are missing a
+whole day's data, and imputing values shifts them them to the centre
+of the distribution.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
